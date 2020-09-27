@@ -11,6 +11,10 @@ public class Spawner : MonoBehaviour
     private bool sourceTwo = false;
     private bool sourceThree = false;
 
+    public Transform spawnPointOne;
+    public Transform spawnPointTwo;
+    public Transform spawnPointThree;
+
     private void Start()
     {
         audioContainer.PlayMusicSource1();
@@ -20,7 +24,28 @@ public class Spawner : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.tag == "SpawnPointTwo")
+        if (collision.collider.tag == "Deadzone")
+        {
+            //print("deadzone");
+
+            if (spawnerCount == 0)
+            {
+                transform.position = new Vector3(spawnPointOne.position.x, spawnPointOne.position.y, spawnPointOne.position.z);
+            }
+            if (spawnerCount == 1)
+            {
+                transform.position = new Vector3(spawnPointTwo.position.x, spawnPointTwo.position.y, spawnPointTwo.position.z);
+            }
+            if (spawnerCount == 2)
+            {
+                transform.position = new Vector3(spawnPointThree.position.x, spawnPointThree.position.y, spawnPointThree.position.z);
+            }
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "SpawnPointTwo")
         {
             spawnerCount = 1;
 
@@ -28,11 +53,15 @@ public class Spawner : MonoBehaviour
             {
                 sourceTwo = true;
                 audioContainer.StartCrossfadeOne();
-                //audioContainer.StopMusicSource1();
-                //audioContainer.PlayMusicSource2(1.0f);
+
+                // for web build
+                /*
+                audioContainer.StopMusicSource1();
+                audioContainer.MusicSource2Vol(1);
+                */
             }
         }
-        if (collision.collider.tag == "SpawnPointThree")
+        if (other.tag == "SpawnPointThree")
         {
             spawnerCount = 2;
 
@@ -40,27 +69,24 @@ public class Spawner : MonoBehaviour
             {
                 sourceThree = true;
                 audioContainer.StartCrossfadeTwo();
-                //audioContainer.StopMusicSource2();
-                //audioContainer.PlayMusicSource3(1.0f);
+
+                // for web build
+                /*
+                audioContainer.StopMusicSource2();
+                audioContainer.MusicSource3Vol(1);
+                */
             }
         }
-        if (collision.collider.tag == "Deadzone")
+        if (other.tag == "End")
         {
-            //print("deadzone");
-
-            if (spawnerCount == 0)
-            {
-                transform.position = new Vector3(-12.08f, 0, -1);
-            }
-            if (spawnerCount == 1)
-            {
-                transform.position = new Vector3(50.85776f, -2.85f, -1);
-            }
-            if (spawnerCount == 2)
-            {
-                transform.position = new Vector3(84.88776f, -0.6399999f, -1);
-            }
-
+            audioContainer.StopMusicSource2();
+            audioContainer.StopMusicSource3();
+            audioContainer.PlayMusicSource4();
         }
+    }
+
+    private void Update()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y, -1);
     }
 }

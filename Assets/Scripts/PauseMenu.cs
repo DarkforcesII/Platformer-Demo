@@ -22,7 +22,12 @@ public class PauseMenu : MonoBehaviour
         GameIsPaused = false;
     }
 
-        void Pause()
+    public void StartGame()
+    {
+        GameManager.Instance.LoadNextScene();
+    }
+
+    void Pause()
     {
         //lowpass on
         NewFadeScript.thisScript.LowpassOn = true;
@@ -31,6 +36,24 @@ public class PauseMenu : MonoBehaviour
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         GameIsPaused = true;
+    }
+
+    public void BacktoMainMenu()
+    {
+        //lowpass off
+        NewFadeScript.thisScript.LowpassOn = false;
+        //NewFadeScript.thisScript.ResetLP();
+
+        //GameManager.Instance.LoadMainMenu();
+
+        StartCoroutine(LoadMainMenuDelayed());
+    }
+
+    IEnumerator LoadMainMenuDelayed()
+    {
+        yield return new WaitForSecondsRealtime(2.5f);
+        Time.timeScale = 1f;
+        GameManager.Instance.LoadMainMenu();
     }
 
     public void QuitGame()

@@ -28,6 +28,8 @@ public class BasicBehaviour : MonoBehaviour
 	private int groundedBool;                             // Animator variable related to whether or not the player is on the ground.
 	private Vector3 colExtents;                           // Collider extents for ground test. 
 
+    private bool hasLanded = false;
+
     public AudioContainer audioContainer;
 
 	// Get current horizontal and vertical axes.
@@ -94,17 +96,30 @@ public class BasicBehaviour : MonoBehaviour
     {
         if (collision.collider.tag == "Grass")
         {
-            groundedBool = Animator.StringToHash("Grounded");
-            colExtents = GetComponent<Collider>().bounds.extents;
-            //print("collided");
+            if (hasLanded != true)
+            {
+                hasLanded = true;
+                groundedBool = Animator.StringToHash("Grounded");
+                colExtents = GetComponent<Collider>().bounds.extents;
+                audioContainer.FootSetpsOnOff(1.0f);
+                audioContainer.PlayLandVoiceOver();
+                //print("collided");
+            }
+        }
+        else
+        {
+            audioContainer.FootSetpsOnOff(0.0f);
         }
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionExit(Collision collision)
     {
-        if (other.tag == "End")
+        if (collision.collider.tag == "Grass")
         {
-            audioContainer.StopMusicSource3();
-            audioContainer.PlayMusicSource4();
+            if (hasLanded != false)
+            {
+                hasLanded = false;
+                audioContainer.FootSetpsOnOff(0.0f);
+            }
         }
     }
 

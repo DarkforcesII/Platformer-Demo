@@ -24,6 +24,11 @@ public class NewFadeScript : MonoBehaviour
         
     }
 
+    public void ResetLP()
+    {
+        Lowpass.SetFloat("HzLvl", maxHz);
+    }
+
     // Update is called once per frame
     void Update()
     {

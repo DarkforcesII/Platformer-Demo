@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class AudioContainer : MonoBehaviour
 {
+    // makes it easier to access scripts
+    public static AudioContainer audioContainer;
+
     public AudioSource jumpSource;
     public AudioSource musicSource1;
     public AudioSource musicSource2;
@@ -11,15 +14,21 @@ public class AudioContainer : MonoBehaviour
     public AudioSource musicSource4;
     public AudioSource sfxSource;
     public AudioSource uiSource;
+    public AudioSource footStepSource;
+    public AudioSource landSource;
 
     public AudioClip[] jumpClips;
     public AudioClip[] musicClips;
     public AudioClip coinSFX;
     public AudioClip[] uiClips;
+    public AudioClip[] footStepClips;
+    public AudioClip[] landClips;
 
     private bool playLandSfx;
     private float lerpSpeed1;
     private float lerpSpeed2;
+    private float lerpSpeed3;
+    private float lerpSpeed4;
     public float fadeInTime = 0.5f;
 
     // sfx methods
@@ -41,6 +50,19 @@ public class AudioContainer : MonoBehaviour
     public void PointerClickSFX()
     {
         uiSource.PlayOneShot(uiClips[1]);
+    }
+    public void PlayFootSteps()
+    {
+        footStepSource.pitch = Random.Range(0.85f, 1.1f);
+        footStepSource.PlayOneShot(footStepClips[Random.Range(0, footStepClips.Length)]);
+    }
+    public void FootSetpsOnOff(float volume)
+    {
+        footStepSource.volume = volume;
+    }
+    public void PlayLandVoiceOver()
+    {
+        landSource.PlayOneShot(landClips[Random.Range(0, landClips.Length)]);
     }
     #endregion
 
@@ -71,9 +93,27 @@ public class AudioContainer : MonoBehaviour
         musicSource4.clip = musicClips[3];
         musicSource4.Play();
     }
+
+    // for web build
+    public void StopMusicSource1()
+    {
+        musicSource1.Stop();
+    }
+    public void StopMusicSource2()
+    {
+        musicSource2.Stop();
+    }
     public void StopMusicSource3()
     {
         musicSource3.Stop();
+    }
+    public void MusicSource2Vol(float volume)
+    {
+        musicSource2.volume = volume;
+    }
+    public void MusicSource3Vol(float volume)
+    {
+        musicSource3.volume = volume;
     }
     #endregion
 
@@ -122,8 +162,8 @@ public class AudioContainer : MonoBehaviour
         yield return null;
         while (musicSource2.volume > 0)
         {
-            lerpSpeed1 += Time.deltaTime;
-            musicSource2.volume = Mathf.Lerp(1, 0, lerpSpeed1);
+            lerpSpeed3 += Time.deltaTime;
+            musicSource2.volume = Mathf.Lerp(1, 0, lerpSpeed3);
             //print(loopSource1.volume);
             yield return new WaitForSecondsRealtime(0.1f);
         }
@@ -134,8 +174,8 @@ public class AudioContainer : MonoBehaviour
         yield return null;
         while (musicSource3.volume < 1.0f)
         {
-            lerpSpeed2 += Time.deltaTime;
-            musicSource3.volume = Mathf.Lerp(0, 1, lerpSpeed2);
+            lerpSpeed4 += Time.deltaTime;
+            musicSource3.volume = Mathf.Lerp(0, 1, lerpSpeed4);
             yield return new WaitForSecondsRealtime(fadeInTime);
         }
     }
